@@ -1,0 +1,90 @@
+---
+import NavigationBar from "../components/NavigationBar.astro";
+import Layout from "../layouts/Layout.astro";
+import Footer from "../components/Footer.astro";
+import TextArea from "@/components/TextArea.astro";
+---
+
+<Layout title="Welcome to Astro.">
+    <NavigationBar />
+
+    <div class="relative overflow-hidden bg-white h-full">
+        <div class="pt-16 pb-80 sm:pt-24 sm:pb-40 lg:pt-40 lg:pb-48">
+            <div
+                class="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8"
+            >
+                <div class="sm:max-w-lg">
+                    <h1
+                        class="font text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl"
+                    >
+                        ¡Denuncia!
+                    </h1>
+                    <p class="mt-4 text-xl text-gray-500">
+                        En KeepURight! estamos para ayudarte, no dudes en
+                        denunciar cualquier situación que te haga sentir
+                        inseguro.
+                    </p>
+                </div>
+                <div class="mt-6">
+                    <TextArea />
+                </div>
+            </div>
+        </div>
+    </div>
+    <Footer />
+</Layout>
+
+<script>
+    document
+        .getElementById("image-upload-button")!
+        .addEventListener("click", () => {
+            document.getElementById("image-upload")!.click(); // Simula clic en el input de imagen
+        });
+
+    document
+        .getElementById("file-upload-button")!
+        .addEventListener("click", () => {
+            document.getElementById("file-upload")!.click(); // Simula clic en el input de archivo
+        });
+
+    const formElement = document.querySelector("form");
+    formElement!.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const chat = document.getElementById("chat") as HTMLTextAreaElement;
+        const message = chat.value.trim();
+
+        if (!message) {
+            alert("El mensaje no puede estar vacío");
+            return;
+        }
+        const complaintId = "ITSH-2024-001";
+        const payload = {
+            identification_code: complaintId,
+            complaint_text: message,
+            complaint_enrollment: "213Z0225",
+            status: 0,
+        };
+        alert(JSON.stringify(payload));
+
+        // Fetch para enviar los datos y archivos
+        try {
+            const response = await fetch("api/complaint", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (response.ok) {
+                alert("Denuncia enviada correctamente");
+                chat.value = ""; // Limpia el textarea
+            } else {
+                alert("Error al enviar la denuncia");
+            }
+        } catch (error) {
+            alert("Error en el envío de la denuncia: " + error);
+        }
+    });
+</script>

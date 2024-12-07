@@ -1,0 +1,160 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Footer from "@/components/Footer.astro";
+---
+
+<Layout title="Inicia Sesión">
+    <section class="bg-gray-50 min-h-screen flex items-center justify-center">
+        <!-- login container -->
+        <div
+            class="bg-gray-100 flex rounded-2xl shadow-lg max-w-3xl p-5 items-center"
+        >
+            <!-- form -->
+            <div class="md:w-1/2 px-8 md:px-16">
+                <h2 class="font-bold text-2xl text-purple-500">
+                    Iniciar Sesión
+                </h2>
+                <p class="text-xs mt-4 text-purple-700">
+                    Si ya tienes una cuenta, inicia sesión para continuar
+                </p>
+
+                <form class="flex flex-col gap-4">
+                    <input
+                        class="p-2 mt-8 rounded-xl border hover:ring-1 hover:ring-fuchsia-500"
+                        type="email"
+                        name="email"
+                        placeholder="Correo Institucional"
+                    />
+                    <div class="relative">
+                        <input
+                            class="p-2 rounded-xl border w-full hover:ring-1 hover:ring-fuchsia-500"
+                            type="password"
+                            name="password"
+                            placeholder="Contraseña"
+                        />
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="gray"
+                            class="bi bi-eye absolute top-1/2 right-3 -translate-y-1/2"
+                            viewBox="0 0 16 16"
+                        >
+                            <path
+                                d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"
+                            ></path>
+                            <path
+                                d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"
+                            ></path>
+                        </svg>
+                    </div>
+                    <button
+                        class="bg-purple-500 rounded-xl text-white py-2 hover:scale-105 duration-300"
+                        >Iniciar Sesión</button
+                    >
+                </form>
+
+                <div class="mt-6 grid grid-cols-3 items-center text-gray-400">
+                    <hr class="border-gray-400" />
+                    <p class="text-center text-sm">O</p>
+                    <hr class="border-gray-400" />
+                </div>
+
+                <button
+                    class="bg-white border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm hover:scale-105 duration-300 text-[#002D74]"
+                >
+                    <svg
+                        viewBox="0 0 256 256"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="30"
+                        height="20"
+                        preserveAspectRatio="xMidYMid"
+                        ><path fill="#F1511B" d="M121.666 121.666H0V0h121.666z"
+                        ></path><path
+                            fill="#80CC28"
+                            d="M256 121.666H134.335V0H256z"></path><path
+                            fill="#00ADEF"
+                            d="M121.663 256.002H0V134.336h121.663z"></path><path
+                            fill="#FBBC09"
+                            d="M256 256.002H134.335V134.336H256z"></path></svg
+                    >
+                    Inicia Sesión con Microsoft
+                </button>
+
+                <div
+                    class="mt-5 text-xs border-b border-[#002D74] py-4 text-[#002D74]"
+                >
+                    <a href="#">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <div
+                    class="mt-3 text-xs flex justify-between items-center text-[#002D74]"
+                >
+                    <p>¿No tienes una cuenta?</p>
+                    <a
+                        href="/register"
+                        class="py-2 px-5 bg-white border rounded-xl hover:scale-110 duration-300"
+                        >Regístrate</a
+                    >
+                </div>
+            </div>
+
+            <!-- image -->
+            <div class="md:block hidden w-1/2">
+                <img
+                    class="rounded-2xl"
+                    src="https://img.freepik.com/vector-gratis/ilustracion-concepto-libertad_114360-15038.jpg?t=st=1733379259~exp=1733382859~hmac=f5b9412ca0299657f77ed98768b4221be46f0a318df4df9f5b1f8350e8502e02&w=740"
+                />
+            </div>
+        </div>
+    </section>
+    <Footer />
+</Layout>
+
+<script>
+    const formElement = document.querySelector("form");
+
+    formElement!.addEventListener("submit", async (event) => {
+        event.preventDefault(); // Evitar comportamiento predeterminado del formulario
+
+        const formData = new FormData(formElement as HTMLFormElement);
+        const data = Object.fromEntries(formData) as Record<string, string>;
+
+        // Validar que el correo cumple con el formato esperado
+        const correoRegex = /^[0-9]{3}Z[0-9]{4}@alum\.huatusco\.tecnm\.mx$/;
+        if (!correoRegex.test(data.email)) {
+            alert("El correo no cumple con el formato esperado.");
+            return;
+        }
+
+        // Preparar los datos para enviar
+        const payload = {
+            email: data.email,
+            password: data.password,
+        };
+        console.log(payload);
+
+        // Enviar los datos al servidor
+        try {
+            const response = await fetch("api/getuser", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload), // Enviar solo los datos necesarios
+            });
+
+            if (response.ok) {
+                window.location.href = "/";
+            } else {
+                const error = await response.json();
+                alert(
+                    `Error: ${error.message || "Usuario o contraseña incorrectos."}`,
+                );
+            }
+        } catch (error) {
+            console.error("Error de red:", error);
+            alert("Usuario o contraseña incorrectos.");
+        }
+    });
+</script>

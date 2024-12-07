@@ -1,0 +1,99 @@
+---
+import { client } from "../../database/client";
+const { rows } = await client.execute({
+    sql: "SELECT * FROM denuncias WHERE matricula_denunciante = ?",
+    args: ["213Z0225"],
+});
+
+const TextosDenuncia = rows.map((row) => row.texto_denuncia);
+const CodigosDenuncia = rows.map((row) => row.codigo_identificacion);
+const MatriculasDenuncia = rows.map((row) => row.matricula_denunciante);
+---
+
+<div id="accordion-open" data-accordion="open">
+    <h2 id="accordion-open-heading-1">
+        <button
+            type="button"
+            class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
+            data-accordion-target="#accordion-open-body-1"
+            aria-expanded="true"
+            aria-controls="accordion-open-body-1"
+        >
+            <span class="flex items-center">{CodigosDenuncia[0]}</span>
+            <svg
+                data-accordion-icon
+                class="w-3 h-3 rotate-180 shrink-0"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 10 6"
+            >
+                <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5 5 1 1 5"></path>
+            </svg>
+        </button>
+    </h2>
+    <div
+        id="accordion-open-body-1"
+        class="hidden"
+        aria-labelledby="accordion-open-heading-1"
+    >
+        <form
+            class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900"
+        >
+            <p class="mb-2 text-gray-500 dark:text-gray-400">
+                {TextosDenuncia[0]}
+            </p>
+            <div class="flex items-center justify-center">
+                <button
+                    class="py-2 px-4 bg-pink-500 text-white font-Rubik rounded-full"
+                >
+                    Enviar a Dirección Académica
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    const formElement = document.querySelector("form");
+
+    formElement!.addEventListener("submit", async (event) => {
+        event.preventDefault(); // Evitar comportamiento predeterminado del formulario
+
+        console.log("Si funciona");
+
+        // Preparar los datos para enviar
+        const payload = {
+            codigo: "ITSH-2024-001",
+            estatus: 1,
+        };
+        alert(JSON.stringify(payload));
+
+        // Enviar los datos al servidor
+        try {
+            const response = await fetch("api/scalecomplaint", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload), // Enviar solo los datos necesarios
+            });
+
+            if (response.ok) {
+                alert("Denuncia enviada a Dirección Académica");
+            } else {
+                const error = await response.json();
+                alert(
+                    `Error: ${error.message || "No se pudo enviar la denuncia."}`,
+                );
+            }
+        } catch (error) {
+            console.error("Error de red:", error);
+            alert("Usuario o contraseña incorrectos.");
+        }
+    });
+</script>

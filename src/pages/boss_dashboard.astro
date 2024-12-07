@@ -1,0 +1,79 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Footer from "@/components/Footer.astro";
+import NavigationBarAdmin from "@/components/NavigationBarAdmin.astro";
+import ComplaintDescription from "@/components/ComplaintDescription.astro";
+---
+
+<Layout title="Mis denuncias">
+    <NavigationBarAdmin />
+    <div class="relative overflow-hidden bg-white h-full">
+        <div class="pt-16 pb-80 sm:pt-24 sm:pb-40 lg:pt-16 lg:pb-48">
+            <div
+                class="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8"
+            >
+                <div class="sm:max-w-lg">
+                    <h1
+                        class="font text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl"
+                    >
+                        Denuncias Recibidas
+                    </h1>
+                    <p class="mt-4 text-xl text-gray-500">
+                        En esta sección podrás ver las denuncias que has
+                        recibido.
+                    </p>
+                </div>
+                <div>
+                    <div class="mt-10">
+                        <ComplaintDescription />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <Footer />
+</Layout>
+<script>
+    import { client } from "../../database/client";
+    const { rows } = await client.execute({
+        sql: "SELECT * FROM denuncias WHERE matricula_denunciante = ?",
+        args: ["213Z0225"],
+    });
+
+    const CodigosDenuncia = rows.map((row) => row.codigo_identificacion);
+    const formElement = document.querySelector("form");
+
+    formElement!.addEventListener("submit", async (event) => {
+        event.preventDefault(); // Evitar comportamiento predeterminado del formulario
+
+        // Preparar los datos para enviar
+        const payload = {
+            codigo: CodigosDenuncia[0],
+            estatus: 1,
+        };
+        alert(JSON.stringify(payload));
+
+        // Enviar los datos al servidor
+        try {
+            const response = await fetch("api/scalecomplaint", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload), // Enviar solo los datos necesarios
+            });
+
+            if (response.ok) {
+                alert("Denuncia enviada a Dirección Académica");
+            } else {
+                const error = await response.json();
+                alert(
+                    `Error: ${error.message || "No se pudo enviar la denuncia."}`,
+                );
+            }
+        } catch (error) {
+            console.error("Error de red:", error);
+            alert("Usuario o contraseña incorrectos.");
+        }
+    });
+</script>

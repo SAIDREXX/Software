@@ -1,0 +1,169 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Footer from "@/components/Footer.astro";
+---
+
+<Layout title="Regístrate">
+    <section class="bg-gray-50 min-h-screen flex items-center justify-center">
+        <!-- login container -->
+        <div
+            class="bg-gray-100 flex rounded-2xl shadow-lg max-w-3xl p-5 items-center"
+        >
+            <!-- form -->
+            <div class="md:w-1/2 px-8 md:px-16">
+                <h2 class="font-bold text-2xl text-purple-500">Regístrate</h2>
+                <p class="text-xs mt-4 text-purple-700">
+                    Crea una cuenta para acceder a la página de denuncias.
+                </p>
+
+                <form class="flex flex-col gap-4">
+                    <input
+                        class="p-2 mt-8 rounded-xl border hover:ring-1 hover:ring-fuchsia-500"
+                        type="text"
+                        name="name"
+                        placeholder="Nombre(s)"
+                    />
+                    <input
+                        class="p-2 rounded-xl border hover:ring-1 hover:ring-fuchsia-500"
+                        type="text"
+                        name="f_lastname"
+                        placeholder="Apellido Paterno"
+                    />
+                    <input
+                        class="p-2 rounded-xl border hover:ring-1 hover:ring-fuchsia-500"
+                        type="text"
+                        name="s_lastname"
+                        placeholder="Apellido Materno"
+                    />
+                    <input
+                        class="p-2 rounded-xl border hover:ring-1 hover:ring-fuchsia-500"
+                        type="email"
+                        name="email"
+                        placeholder="Correo Institucional"
+                    />
+
+                    <div class="relative">
+                        <input
+                            class="p-2 rounded-xl border w-full hover:ring-1 hover:ring-fuchsia-500"
+                            type="password"
+                            name="password"
+                            placeholder="Contraseña"
+                        />
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="gray"
+                            class="bi bi-eye absolute top-1/2 right-3 -translate-y-1/2"
+                            viewBox="0 0 16 16"
+                        >
+                            <path
+                                d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"
+                            ></path>
+                            <path
+                                d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"
+                            ></path>
+                        </svg>
+                    </div>
+                    <button
+                        class="bg-purple-500 rounded-xl text-white py-2 hover:scale-105 duration-300"
+                        >Iniciar Sesión</button
+                    >
+                </form>
+
+                <div
+                    class="mt-5 text-xs border-b border-[#002D74] py-4 text-[#002D74]"
+                >
+                    <a href="#">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <div
+                    class="mt-3 text-xs flex justify-between items-center text-[#002D74]"
+                >
+                    <p>¿Ya tienes una cuenta?</p>
+                    <a
+                        href="/login"
+                        class="py-2 px-5 bg-white border rounded-xl hover:scale-110 duration-300"
+                        >Iniciar Sesión</a
+                    >
+                </div>
+            </div>
+
+            <!-- image -->
+            <div class="md:block hidden w-1/2">
+                <img
+                    class="rounded-2xl"
+                    src="https://img.freepik.com/vector-gratis/ilustracion-concepto-libertad_114360-15038.jpg?t=st=1733379259~exp=1733382859~hmac=f5b9412ca0299657f77ed98768b4221be46f0a318df4df9f5b1f8350e8502e02&w=740"
+                />
+            </div>
+        </div>
+    </section>
+    <Footer />
+</Layout>
+
+<script>
+    const formElement = document.querySelector("form");
+
+    formElement!.addEventListener("submit", async (event) => {
+        event.preventDefault(); // Evitar comportamiento predeterminado del formulario
+
+        const formData = new FormData(formElement as HTMLFormElement);
+        const data = Object.fromEntries(formData) as Record<string, string>;
+
+        // Validar que el correo cumple con el formato esperado
+        const correoRegex = /^[0-9]{3}Z[0-9]{4}@alum\.huatusco\.tecnm\.mx$/;
+        if (!correoRegex.test(data.email)) {
+            alert("El correo no cumple con el formato esperado.");
+            return;
+        }
+
+        const nameRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/;
+        if (!nameRegex.test(data.name)) {
+            alert("El nombre no cumple con el formato esperado.");
+            return;
+        }
+        if (!nameRegex.test(data.f_lastname)) {
+            alert("El apellido paterno no cumple con el formato esperado.");
+            return;
+        }
+        if (!nameRegex.test(data.s_lastname)) {
+            alert("El apellido materno no cumple con el formato esperado.");
+            return;
+        }
+
+        // Obtener matrícula (primeros 8 caracteres del correo)
+        const matricula = data.email.substring(0, 8);
+
+        // Preparar los datos para enviar
+        const payload = {
+            name: data.name,
+            f_lastname: data.f_lastname,
+            s_lastname: data.s_lastname,
+            enrollment: matricula,
+            email: data.email,
+            password: data.password,
+        };
+
+        // Enviar los datos al servidor
+        try {
+            const response = await fetch("api/user", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload), // Enviar solo los datos necesarios
+            });
+
+            if (response.ok) {
+                alert("Usuario creado exitosamente.");
+                window.location.href = "/login";
+            } else {
+                const error = await response.json();
+                alert(`Error: ${error.message}`);
+            }
+        } catch (error) {
+            console.error("Error de red:", error);
+            alert("Hubo un problema al conectar con el servidor.");
+        }
+    });
+</script>
