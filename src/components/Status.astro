@@ -4,10 +4,8 @@ const { rows } = await client.execute({
     sql: "SELECT * FROM denuncias WHERE matricula_denunciante = ?",
     args: ["213Z0225"],
 });
-console.log(rows);
 
 const codigosIdentificacion = rows.map((row) => row.codigo_identificacion);
-console.log(codigosIdentificacion);
 ---
 
 {

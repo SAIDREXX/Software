@@ -38,8 +38,6 @@ export const addUser = async (jsonData: User) => {
         sql: sql,
         args: [jsonData.name, jsonData.f_lastname, jsonData.s_lastname, jsonData.enrollment, jsonData.email, jsonData.password],
     })
-
-    console.log(result)
     return result
 }
 

@@ -9,7 +9,7 @@ CREATE TABLE usuarios (
     apellido_materno TEXT NOT NULL,
     matricula TEXT NOT NULL UNIQUE,
     email TEXT NOT NULL UNIQUE,
-    contraseña TEXT NOT NULL,
+    contraseña TEXT NOT NULL
 );
 
 -- Crear la tabla denuncias
